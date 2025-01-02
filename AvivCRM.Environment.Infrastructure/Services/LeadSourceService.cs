@@ -15,13 +15,13 @@ namespace ConfigurationServices.CQRS.Infrastucture.Services
         public async Task<LeadSource> GetByLeadSourceNameAsync(string leadSource)
         {
             var lead = await _leadRepository.GetAllAsync();
-            return lead.FirstOrDefault(p => p.source.Equals(leadSource, StringComparison.OrdinalIgnoreCase));
+            return lead.FirstOrDefault(p => p.Name.Equals(leadSource, StringComparison.OrdinalIgnoreCase));
         }
 
         public async Task<IEnumerable<LeadSource>> SearchLeadSourceByNameAsync(string leadSource)
         {
             var leads = await _leadRepository.GetAllAsync();
-            return leads.Where(p => p.source.Contains(leadSource, StringComparison.OrdinalIgnoreCase));
+            return leads.Where(p => p.Name.Contains(leadSource, StringComparison.OrdinalIgnoreCase));
         }
 
         public async System.Threading.Tasks.Task UpdateLeadSourceAsync(LeadSource leadSource)
@@ -37,7 +37,7 @@ namespace ConfigurationServices.CQRS.Infrastucture.Services
             //_productRepository.Detach(existingProduct);
 
             // Apply changes to the product
-            existingProduct.source = leadSource.source;
+            existingProduct.Name = leadSource.Name;
 
             // Call the repository's UpdateAsync method
             await _leadRepository.UpdateAsync(existingProduct);
