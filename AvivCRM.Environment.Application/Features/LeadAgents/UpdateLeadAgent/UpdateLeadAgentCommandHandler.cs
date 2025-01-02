@@ -1,40 +1,43 @@
+using AutoMapper;
+using AvivCRM.Environment.Application.DTOs;
+using AvivCRM.Environment.Domain.Contracts;
+using AvivCRM.Environment.Domain.Contracts.Lead;
+using AvivCRM.Environment.Domain.Entities;
+using AvivCRM.Environment.Domain.Responses;
 using FluentValidation;
 using MediatR;
-using AvivCRM.Environment.Application.DTOs;
-using AvivCRM.Environment.Domain.Interfaces;
 
-namespace AvivCRM.Environment.Application.Features.LeadAgents.UpdateLeadAgent
+namespace AvivCRM.Environment.Application.Features.LeadAgents.UpdateLeadAgent;
+
+internal class UpdatePlanTypeCommandHandler(IValidator<UpdateLeadAgentRequest> _validator, ILeadAgent _leadAgentRepository, IUnitOfWork _unitOfWork, IMapper mapper) : IRequestHandler<UpdateLeadAgentCommand, ServerResponse>
 {
-    public class UpdateLeadAgentCommandHandler : IRequestHandler<UpdateLeadAgentCommand, string>
+    public async Task<ServerResponse> Handle(UpdateLeadAgentCommand request, CancellationToken cancellationToken)
     {
+        // Validate Request
+        var validate = await _validator.ValidateAsync(request.LeadAgent);
+        if (!validate.IsValid) return new ServerResponse(Message: string.Join("; ", validate.Errors.Select(error => error.ErrorMessage)));
 
-        private readonly IGenericRepository<Domain.Entities.LeadAgent> _repository;
-        private readonly IValidator<UpdateLeadAgentRequest> _validator;
-        public UpdateLeadAgentCommandHandler(IGenericRepository<Domain.Entities.LeadAgent> repository
-            , IValidator<UpdateLeadAgentRequest> validator)
+        // Check if the Lead Agent exists
+        var leadAgent = await _leadAgentRepository.GetByIdAsync(request.LeadAgent.Id);
+        if (leadAgent is null) return new ServerResponse(Message: "Lead Agent Not Found");
+
+        // Map the request to the entity
+        var leadAgentEntity = mapper.Map<LeadAgent>(request.LeadAgent);
+
+        try
         {
-            _repository = repository;
-            _validator = validator;
+            // Update the Lead Agent
+            _leadAgentRepository.Update(leadAgentEntity);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            return new ServerResponse(Message: ex.Message);
         }
 
-        public async Task<string> Handle(UpdateLeadAgentCommand request, CancellationToken cancellationToken)
-        {
-            var validate = await _validator.ValidateAsync(request.LeadAgent);
-            if (!validate.IsValid)
-            {
-                var erroList = string.Join("; ", validate.Errors.Select(error => error.ErrorMessage));
-
-                return erroList.ToString()!;
-            }
-            var leadAgent = new Domain.Entities.LeadAgent
-            {
-                Id = request.LeadAgent.Id,
-                AgentName = request.LeadAgent.AgentName
-            };
-            await _repository.UpdateAsync(leadAgent);
-            return "Updated Successfully";
-        }
+        return new ServerResponse(IsSuccess: true, Message: "Lead Agent Updated Successfully", Data: leadAgent);
     }
 }
+
 
 

@@ -3,6 +3,6 @@ using AvivCRM.Environment.Domain.Responses;
 
 namespace AvivCRM.Environment.Application.Features.LeadAgents.GetLeadAgentById;
 
-public record GetLeadAgentsByIdQuery(int Id) : IRequest<ServerResponse>;
+public record GetLeadAgentByIdQuery(Guid Id) : IRequest<ServerResponse>;
 
 

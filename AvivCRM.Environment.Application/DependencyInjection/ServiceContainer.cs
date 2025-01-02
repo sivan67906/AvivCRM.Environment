@@ -1,8 +1,8 @@
-﻿using System.Reflection;
-using AvivCRM.Environment.Application.Common.AutoMapper;
+﻿using AvivCRM.Environment.Application.Common.AutoMapper;
 using AvivCRM.Environment.Application.Features.LeadAgents.CreateLeadAgent;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace AvivCRM.Environment.Application.DependencyInjection;
 
@@ -17,6 +17,6 @@ public static class ServiceContainer
         services.AddValidatorsFromAssemblyContaining<CreateLeadCategoryCommandValidator>();
         services.AddAutoMapper(typeof(MapperConfig));
         return services;
-        //services.AddValidatorsFromAssemblyContaining<>();
+
     }
 }

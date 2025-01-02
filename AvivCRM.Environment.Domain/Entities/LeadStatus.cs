@@ -1,9 +1,10 @@
-﻿namespace AvivCRM.Environment.Domain.Entities
+﻿using AvivCRM.Environment.Domain.Entities.Common;
+
+namespace AvivCRM.Environment.Domain.Entities
 {
-    public sealed class LeadStatus
+    public sealed class LeadStatus : BaseEntity
     {
-        public Guid Id { get; set; }
-        public string? Status { get; set; }
+        public string? Name { get; set; }
         public string? Color { get; set; }
     }
 }

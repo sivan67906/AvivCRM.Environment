@@ -13,14 +13,14 @@ namespace AvivCRM.Environment.Infrastructure.Services
         {
             var product = await _leadAgentRepository.GetAllAsync();
             return product.FirstOrDefault(
-                p => p.AgentName.Equals(leadAgent, StringComparison.OrdinalIgnoreCase));
+                p => p.Name.Equals(leadAgent, StringComparison.OrdinalIgnoreCase));
         }
 
         public async Task<IEnumerable<LeadAgent>> SearchLeadAgentByNameAsync(string leadAgent)
         {
             var products = await _leadAgentRepository.GetAllAsync();
             return products.Where(
-                p => p.AgentName.Contains(leadAgent, StringComparison.OrdinalIgnoreCase));
+                p => p.Name.Contains(leadAgent, StringComparison.OrdinalIgnoreCase));
         }
 
         public async System.Threading.Tasks.Task UpdateLeadAgentAsync(LeadAgent agent)
@@ -36,7 +36,7 @@ namespace AvivCRM.Environment.Infrastructure.Services
             //_productRepository.Detach(existingProduct);
 
             // Apply changes to the product
-            existingProduct.AgentName = agent.AgentName;
+            existingProduct.Name = agent.Name;
 
 
             // Call the repository's UpdateAsync method

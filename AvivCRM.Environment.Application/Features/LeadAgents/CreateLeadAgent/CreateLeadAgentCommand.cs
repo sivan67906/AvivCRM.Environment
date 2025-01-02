@@ -1,9 +1,10 @@
+using AvivCRM.Environment.Application.DTOs.LeadAgent;
+using AvivCRM.Environment.Domain.Responses;
 using MediatR;
-using AvivCRM.Environment.Application.DTOs;
 
 namespace AvivCRM.Environment.Application.Features.LeadAgents.CreateLeadAgent
 {
-    public record CreateLeadAgentCommand(CreateLeadAgentRequest LeadAgent) : IRequest<string>;
+    public record CreateLeadAgentCommand(CreateLeadAgentRequest LeadAgent) : IRequest<ServerResponse>;
 }
 
 

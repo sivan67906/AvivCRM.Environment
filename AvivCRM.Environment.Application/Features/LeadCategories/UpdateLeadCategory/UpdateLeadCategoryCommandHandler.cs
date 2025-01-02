@@ -28,7 +28,7 @@ namespace AvivCRM.Environment.Application.Features.LeadCategories.UpdateLeadCate
             var category = new Domain.Entities.LeadCategory
             {
                 Id = request.LeadCategory.Id,
-                CategoryName = request.LeadCategory.CategoryName
+                Name = request.LeadCategory.Name
 
             };
             await _repository.UpdateAsync(category);

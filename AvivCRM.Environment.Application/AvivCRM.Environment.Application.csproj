@@ -18,4 +18,12 @@
     <ProjectReference Include="..\AvivCRM.Environment.Domain\AvivCRM.Environment.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\LeadStatueses\CreateLeadStatues\" />
+    <Folder Include="Features\LeadStatueses\DeleteLeadStatues\" />
+    <Folder Include="Features\LeadStatueses\GetAllLeadStatues\" />
+    <Folder Include="Features\LeadStatueses\GetLeadStatuesById\" />
+    <Folder Include="Features\LeadStatueses\UpdateLeadStatues\" />
+  </ItemGroup>
+
 </Project>

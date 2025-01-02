@@ -18,7 +18,7 @@ namespace AvivCRM.Environment.Application.Features.LeadCategories.GetAllLeadCate
             var categorylist = categories.Select(x => new GetLeadCategory
             {
                 Id = x.Id,
-                CategoryName = x.CategoryName!
+                Name = x.Name!
             }).ToList();
 
             return new ServerResponse(IsSuccess: true, Message: "GetAll Lead Categories Executed", Data: categorylist);

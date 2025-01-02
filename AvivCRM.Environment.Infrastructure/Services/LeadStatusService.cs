@@ -8,7 +8,7 @@ namespace ConfigurationServices.CQRS.Infrastucture.Services
     {
         private readonly IGenericRepository<LeadStatus> _leadstatusRepository;
 
-        public LeadStatusService(IGenericRepository<LeadStatus> leadstatusRepository) 
+        public LeadStatusService(IGenericRepository<LeadStatus> leadstatusRepository)
         {
             _leadstatusRepository = leadstatusRepository;
         }
@@ -16,13 +16,13 @@ namespace ConfigurationServices.CQRS.Infrastucture.Services
         public async Task<LeadStatus> GetByLeadStatusNameAsync(string leadStatus)
         {
             var lead = await _leadstatusRepository.GetAllAsync();
-            return lead.FirstOrDefault(p => p.Status.Equals(leadStatus, StringComparison.OrdinalIgnoreCase));
+            return lead.FirstOrDefault(p => p.Name.Equals(leadStatus, StringComparison.OrdinalIgnoreCase));
         }
 
         public async Task<IEnumerable<LeadStatus>> SearchLeadStatusByNameAsync(string leadStatus)
         {
             var leads = await _leadstatusRepository.GetAllAsync();
-            return leads.Where(p => p.Status.Contains(leadStatus, StringComparison.OrdinalIgnoreCase));
+            return leads.Where(p => p.Name.Contains(leadStatus, StringComparison.OrdinalIgnoreCase));
         }
 
         public async System.Threading.Tasks.Task UpdateLeadStatusAsync(LeadStatus leadStatus)
@@ -38,7 +38,7 @@ namespace ConfigurationServices.CQRS.Infrastucture.Services
             //_productRepository.Detach(existingProduct);
 
             // Apply changes to the product
-            existingProduct.Status = leadStatus.Status;
+            existingProduct.Name = leadStatus.Name;
             existingProduct.Color = leadStatus.Color;
 
             // Call the repository's UpdateAsync method

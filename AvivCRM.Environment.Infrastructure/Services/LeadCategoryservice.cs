@@ -13,14 +13,14 @@ namespace AvivCRM.Environment.Infrastructure.Services
         {
             var product = await _repository.GetAllAsync();
             return product.FirstOrDefault(
-                p => p.CategoryName.Equals(categoryName, StringComparison.OrdinalIgnoreCase));
+                p => p.Name.Equals(categoryName, StringComparison.OrdinalIgnoreCase));
         }
 
         public async Task<IEnumerable<LeadCategory>> SearchCategoryByNameAsync(string categoryName)
         {
             var products = await _repository.GetAllAsync();
             return products.Where(
-                p => p.CategoryName.Contains(categoryName, StringComparison.OrdinalIgnoreCase));
+                p => p.Name.Contains(categoryName, StringComparison.OrdinalIgnoreCase));
         }
 
         public async System.Threading.Tasks.Task UpdateCategoryAsync(LeadCategory category)
@@ -36,7 +36,7 @@ namespace AvivCRM.Environment.Infrastructure.Services
             //_productRepository.Detach(existingProduct);
 
             // Apply changes to the product
-            existingProduct.CategoryName = category.CategoryName;
+            existingProduct.Name = category.Name;
 
 
             // Call the repository's UpdateAsync method

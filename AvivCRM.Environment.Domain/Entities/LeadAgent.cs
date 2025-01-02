@@ -1,8 +1,9 @@
-﻿namespace AvivCRM.Environment.Domain.Entities
+﻿using AvivCRM.Environment.Domain.Entities.Common;
+
+namespace AvivCRM.Environment.Domain.Entities
 {
-    public sealed class LeadAgent
+    public sealed class LeadAgent : BaseEntity
     {
-        public Guid Id { get; set; }
-        public string? AgentName { get; set; }
+        public string? Name { get; set; }
     }
 }

@@ -1,77 +1,56 @@
-﻿using AvivCRM.Environment.Application.Services;
-using AvivCRM.Environment.Domain.Entities;
-using AvivCRM.Environment.Domain.Interfaces;
+﻿using AvivCRM.Environment.Application.DTOs.LeadSources;
+using AvivCRM.Environment.Application.Features.LeadAgents.DeleteLeadAgent;
+using AvivCRM.Environment.Application.Features.LeadSourcees.GetAllLeadSource;
+using AvivCRM.Environment.Application.Features.LeadSourcees.UpdateLeadSource;
+using AvivCRM.Environment.Application.Features.LeadSources.CreateLeadSource;
+using AvivCRM.Environment.Application.Features.LeadSources.GetLeadSourceById;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AvivCRM.Environment.API.Controllers
+namespace AvivCRM.Environment.API.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class LeadSourceController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class LeadSourceController : ControllerBase
+
+    private readonly ISender _sender;
+    public LeadSourceController(ISender sender) => _sender = sender;
+
+    [HttpGet("GetById")]
+    public async Task<IActionResult> GetById(GetLeadSource leadSource)
     {
-        private readonly IGenericRepository<LeadSource> _leadsourceRepository;
-        private readonly ILeadSourceService _leadsourceService;
+        var result = await _sender.Send(new GetLeadSourceByIdQuery(leadSource.Id));
+        return Ok(result);
+    }
 
-        public LeadSourceController(IGenericRepository<LeadSource> leadsourceRepository, ILeadSourceService leadsourceService)
-        {
-            _leadsourceRepository = leadsourceRepository;
-            _leadsourceService = leadsourceService;
-        }
 
-        [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAll()
-        {
-            var products = await _leadsourceRepository.GetAllAsync();
-            if (products is null) return NotFound();
-            return Ok(products);
-        }
+    [HttpPost("Create")]
+    public async Task<IActionResult> Create(CreateLeadSourceRequest leadSource)
+    {
+        var result = await _sender.Send(new CreateLeadSourceCommand(leadSource));
+        return Ok(result);
+    }
 
-        [HttpGet("GetById")]
-        public async Task<IActionResult> GetById(Guid Id)
-        {
-            var product = await _leadsourceRepository.GetByIdAsync(Id);
-            if (product is null) return NotFound();
-            return Ok(product);
-        }
+    [HttpPut("Update")]
+    public async Task<IActionResult> Update(UpdateLeadSourceRequest leadSource)
+    {
+        await _sender.Send(new UpdateLeadSourceCommand(leadSource));
+        return NoContent();
+    }
 
-        [HttpGet("{LeadStatus:required}")]
-        public async Task<IActionResult> GetByName(string productName)
-        {
-            var product = await _leadsourceService.GetByLeadSourceNameAsync(productName);
-            if (product is null) return NotFound();
-            return Ok(product);
-        }
+    [HttpGet("GetAll")]
+    public async Task<IActionResult> GetAll()
+    {
+        var leadSourceList = await _sender.Send(new GetAllLeadSourceQuery());
+        return Ok(leadSourceList);
+    }
 
-        [HttpGet("SearchByName")]
-        public async Task<IActionResult> SearchByName(string name)
-        {
-            var products = await _leadsourceService.SearchLeadSourceByNameAsync(name);
-            if (products is null || !products.Any()) return NotFound("Searchable Lead not found.");
-            return Ok(products);
-        }
 
-        [HttpPost("Create")]
-        public async Task<IActionResult> Create(LeadSource entity)
-        {
-            if (entity == null) return BadRequest();
-            await _leadsourceRepository.CreateAsync(entity);
-            return CreatedAtAction(nameof(GetById), new { id = entity.Id }, entity);
-        }
-
-        [HttpPut("Update")]
-        public async Task<IActionResult> UpdateProduct(LeadSource product)
-        {
-            await _leadsourceRepository.UpdateAsync(product);
-            return NoContent();
-        }
-
-        [HttpDelete("Delete")]
-        public async Task<IActionResult> DeleteProduct(Guid id)
-        {
-            //var existingProduct = await _leadsourceRepository.GetByIdAsync(id);
-            if (id == null) return NotFound();
-            await _leadsourceRepository.DeleteAsync(id);
-            return NoContent();
-        }
+    [HttpDelete("Delete")]
+    public async Task<IActionResult> Delete(Guid Id)
+    {
+        await _sender.Send(new DeleteLeadAgentCommand(Id));
+        return NoContent();
     }
 }

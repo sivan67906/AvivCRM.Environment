@@ -1,39 +1,42 @@
+using AutoMapper;
+using AvivCRM.Environment.Application.DTOs.LeadAgent;
+using AvivCRM.Environment.Domain.Contracts;
+using AvivCRM.Environment.Domain.Contracts.Lead;
+using AvivCRM.Environment.Domain.Entities;
+using AvivCRM.Environment.Domain.Responses;
 using FluentValidation;
 using MediatR;
-using AvivCRM.Environment.Application.DTOs;
-using AvivCRM.Environment.Domain.Interfaces;
 
-namespace AvivCRM.Environment.Application.Features.LeadAgents.CreateLeadAgent
+namespace AvivCRM.Environment.Application.Features.LeadAgents.CreateLeadAgent;
+
+internal class CreatePlanTypeCommandHandler(IValidator<CreateLeadAgentRequest> _validator, ILeadAgent _leadAgentRepository, IUnitOfWork _unitOfWork, IMapper mapper) : IRequestHandler<CreateLeadAgentCommand, ServerResponse>
 {
-    public class CreateLeadAgentCommandHandler : IRequestHandler<CreateLeadAgentCommand, string>
+    public async Task<ServerResponse> Handle(CreateLeadAgentCommand request, CancellationToken cancellationToken)
     {
-        private readonly IGenericRepository<Domain.Entities.LeadAgent> _leadagentRepository;
-        private readonly IValidator<CreateLeadAgentRequest> _validator;
-        public CreateLeadAgentCommandHandler(IGenericRepository<Domain.Entities.LeadAgent> leadagentRepository, IValidator<CreateLeadAgentRequest> validator)
+        // Validate the request
+        var validate = await _validator.ValidateAsync(request.LeadAgent);
+
+        if (!validate.IsValid) return new ServerResponse(Message: string.Join("; ", validate.Errors.Select(error => error.ErrorMessage)));
+
+        // Check if the Lead Agent already exists
+        var isAvailable = await _leadAgentRepository.IsAvailableByNameAsync(request.LeadAgent.Name);
+        if (isAvailable) return new ServerResponse(Message: "Lead Agent Already Exists");
+
+        // Map the request to the entity
+        var leadAgentEntity = mapper.Map<LeadAgent>(request.LeadAgent);
+
+        try
         {
-            _leadagentRepository = leadagentRepository;
-            _validator = validator;
+            // Add the Lead Agent
+            _leadAgentRepository.Add(leadAgentEntity);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            return new ServerResponse(Message: ex.Message);
         }
 
-        public async Task<string> Handle(CreateLeadAgentCommand request, CancellationToken cancellationToken)
-        {
-
-            var validate = await _validator.ValidateAsync(request.LeadAgent);
-            if (!validate.IsValid)
-            {
-                var erroList = string.Join("; ", validate.Errors.Select(error => error.ErrorMessage));
-
-                return erroList.ToString()!;
-            }
-            var leadAgent = new Domain.Entities.LeadAgent
-            {
-                AgentName = request.LeadAgent.AgentName
-            };
-
-            await _leadagentRepository.CreateAsync(leadAgent);
-            return "Agent Created Successfully";
-        }
+        return new ServerResponse(IsSuccess: true, Message: "Lead Agent Created Successfully", Data: leadAgentEntity);
     }
 }
-
 

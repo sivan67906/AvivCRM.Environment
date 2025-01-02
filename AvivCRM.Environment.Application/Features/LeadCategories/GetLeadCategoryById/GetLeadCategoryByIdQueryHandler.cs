@@ -1,25 +1,22 @@
-using MediatR;
+using AutoMapper;
 using AvivCRM.Environment.Application.DTOs.LeadCategories;
-using AvivCRM.Environment.Domain.Interfaces;
+using AvivCRM.Environment.Domain.Contracts.Lead;
 using AvivCRM.Environment.Domain.Responses;
+using MediatR;
 
-namespace AvivCRM.Environment.Application.Features.LeadCategories.GetLeadCategoryById
+namespace AvivCRM.Environment.Application.Features.LeadCategories.GetLeadCategoryById;
+internal class GetLeadCategoryByIdQueryHandler(ILeadCategory _leadCategoryRepository, IMapper mapper) : IRequestHandler<GetLeadCategoryByIdQuery, ServerResponse>
 {
-    public class GetLeadCategoryByIdQueryHandler : IRequestHandler<GetLeadCategoryByIdQuery, ServerResponse>
+    public async Task<ServerResponse> Handle(GetLeadCategoryByIdQuery request, CancellationToken cancellationToken)
     {
-        private readonly IGenericRepository<Domain.Entities.LeadCategory> _leadcategoryRepository;
-        public GetLeadCategoryByIdQueryHandler(IGenericRepository<Domain.Entities.LeadCategory> repository) => _leadcategoryRepository = repository;
+        // Get the plan type by id
+        var leadCategory = await _leadCategoryRepository.GetByIdAsync(request.Id);
+        if (leadCategory is null) return new ServerResponse(Message: "Lead Category Not Found");
 
-        public async Task<ServerResponse> Handle(GetLeadCategoryByIdQuery request, CancellationToken cancellationToken)
-        {
-            var category = await _leadcategoryRepository.GetByIdAsync(request.Id);
-            if (category == null) return new ServerResponse(IsSuccess: false, Message: "No Lead Categories mapped with this Id");
-            GetLeadCategory leadCategory = new GetLeadCategory
-            {
-                Id = category.Id,
-                CategoryName = category.CategoryName!
-            };
-            return new ServerResponse(IsSuccess: true, Message: "GetByLead CategoryId executed", Data: leadCategory);
-        }
+        // Map the entity to the response
+        var planTypeResponse = mapper.Map<GetLeadCategory>(leadCategory);
+        if (planTypeResponse is null) return new ServerResponse(Message: "Lead Category Not Found");
+
+        return new ServerResponse(IsSuccess: true, Message: "Lead Category", Data: planTypeResponse);
     }
 }

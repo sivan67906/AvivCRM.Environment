@@ -1,36 +1,35 @@
-using AvivCRM.Environment.Domain.Interfaces;
+using AutoMapper;
+using AvivCRM.Environment.Domain.Contracts;
+using AvivCRM.Environment.Domain.Contracts.Lead;
+using AvivCRM.Environment.Domain.Entities;
+using AvivCRM.Environment.Domain.Responses;
 using MediatR;
 
-namespace AvivCRM.Environment.Application.Features.LeadAgents.DeleteLeadAgent
+namespace AvivCRM.Environment.Application.Features.LeadAgents.DeleteLeadAgent;
+
+internal class DeleteLeadAgentCommandHandler(ILeadAgent _leadAgentRepository, IUnitOfWork _unitOfWork, IMapper mapper) : IRequestHandler<DeleteLeadAgentCommand, ServerResponse>
 {
-    public class DeleteLeadAgentCommandHandler : IRequestHandler<DeleteLeadAgentCommand, string>
+    public async Task<ServerResponse> Handle(DeleteLeadAgentCommand request, CancellationToken cancellationToken)
     {
-        //private readonly IGenericRepository<Domain.Entities.LeadAgents> _repository;
-        //public DeleteLeadAgentCommandHandler(IGenericRepository<Domain.Entities.LeadAgents> repository)
-        //{
-        //    _repository = repository;
-        //}
-        private readonly IGenericRepository<Domain.Entities.LeadAgent> _leadAgentRepo;
-        public DeleteLeadAgentCommandHandler(IGenericRepository<Domain.Entities.LeadAgent> leadAgentRepo)
+        // Is Found
+        var leadAgent = await _leadAgentRepository.GetByIdAsync(request.Id);
+        if (leadAgent is null) return new ServerResponse(Message: "Lead Agent Not Found");
+
+        // Map the request to the entity
+        var delMapEntity = mapper.Map<LeadAgent>(leadAgent);
+
+        try
         {
-            _leadAgentRepo = leadAgentRepo;
+            // Delete plan type
+            _leadAgentRepository.Delete(delMapEntity);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            return new ServerResponse(Message: ex.Message);
         }
 
-        //public Task<string> Handle(DeleteLeadAgentCommand request, CancellationToken cancellationToken)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        public async Task<string> Handle(DeleteLeadAgentCommand request, CancellationToken cancellationToken)
-        {
-            //if (request == null || request.Id <= 0)
-            //{
-            //    return "Request or Request.Id cannot be null.";
-            //}
-            await _leadAgentRepo.DeleteAsync(request.Id);
-            return "Deleted Successfully";
-        }
+        return new ServerResponse(IsSuccess: true, Message: "Lead Agent Deleted Successfully", Data: leadAgent);
     }
 }
-
 
