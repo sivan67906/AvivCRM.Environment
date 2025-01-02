@@ -1,4 +1,6 @@
 ﻿using AvivCRM.Environment.Application.Services;
+using AvivCRM.Environment.Domain.Contracts;
+using AvivCRM.Environment.Domain.Contracts.Lead;
 using AvivCRM.Environment.Domain.Interfaces;
 using AvivCRM.Environment.Infrastructure.Persistence;
 using AvivCRM.Environment.Infrastructure.Repositories;
@@ -26,6 +28,10 @@ public static class ServiceContainer
         services.AddScoped<ILeadStatusService, LeadStatusService>();
         services.AddScoped<IStateService, StateService>();
         services.AddScoped<ICityService, CityService>();
+
+
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<ILeadCategory, LeadCategoryRepository>();
 
         return services;
     }

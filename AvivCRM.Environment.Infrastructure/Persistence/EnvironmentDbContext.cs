@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using AvivCRM.Environment.Domain.Entities;
+﻿using AvivCRM.Environment.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace AvivCRM.Environment.Infrastructure.Persistence;
 
