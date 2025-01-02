@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\Workspace\AvivCRM\AvivCRM.Environment\AvivCRM.Environment.Application\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="D:\Workspace\AvivCRM\AvivCRM.Environment\AvivCRM.Environment.Application\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AvivCRM.Environment.Domain\AvivCRM.Environment.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
