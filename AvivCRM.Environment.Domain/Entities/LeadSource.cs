@@ -1,8 +1,9 @@
-﻿namespace AvivCRM.Environment.Domain.Entities
+﻿using AvivCRM.Environment.Domain.Entities.Common;
+
+namespace AvivCRM.Environment.Domain.Entities
 {
-    public sealed class LeadSource
+    public sealed class LeadSource : BaseEntity
     {
-        public Guid Id { get; set; }
-        public string? source { get; set; }
+        public string? Name { get; set; }
     }
 }

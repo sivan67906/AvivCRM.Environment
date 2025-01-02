@@ -5,7 +5,7 @@ using AvivCRM.Environment.Infrastructure.Persistence;
 
 namespace AvivCRM.Environment.Infrastructure.Repositories;
 
-public class LeadCategoryRepository(ApplicationDbContext dbContext) 
+public class LeadCategoryRepository(ApplicationDbContext dbContext)
     : GenericRepository<LeadCategory>(dbContext, dbContext.LeadCategories), ILeadCategory
 {
 

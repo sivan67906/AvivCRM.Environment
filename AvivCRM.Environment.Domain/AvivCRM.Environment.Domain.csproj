@@ -26,4 +26,8 @@
     <None Include="D:\Workspace\AvivCRM\AvivCRM.Environment\AvivCRM.Environment.Domain\.editorconfig" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\Mapping\" />
+  </ItemGroup>
+
 </Project>
