@@ -12,14 +12,14 @@ namespace AvivCRM.Environment.API.Controllers;
 public class EmployeeController : ControllerBase
 {
 
-    private readonly IMediator _mediator;
-    public EmployeeController(IMediator mediator) => _mediator = mediator;
+    private readonly ISender _sender;
+    public EmployeeController(ISender sender) => _sender = sender;
 
 
     [HttpGet("GetById")]
     public async Task<IActionResult> GetById(Guid Id)
     {
-        var product = await _mediator.Send(new GetEmployeeByIdQuery { Id = Id });
+        var product = await _sender.Send(new GetEmployeeByIdQuery { Id = Id });
         if (product is not null) { return Ok(product); }
         return NotFound();
     }
@@ -28,7 +28,7 @@ public class EmployeeController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create(CreateEmployeeCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return Ok("Clients Created Successfully.");
     }
 
@@ -36,14 +36,14 @@ public class EmployeeController : ControllerBase
     [HttpPut("Update")]
     public async Task<IActionResult> Update(UpdateEmployeeCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return NoContent();
     }
 
     [HttpGet("GetAll")]
     public async Task<IActionResult> GetAll()
     {
-        var consumerList = await _mediator.Send(new GetAllEmployeeQuery());
+        var consumerList = await _sender.Send(new GetAllEmployeeQuery());
         return Ok(consumerList);
     }
 
@@ -51,7 +51,7 @@ public class EmployeeController : ControllerBase
     [HttpDelete("Delete")]
     public async Task<IActionResult> Delete(Guid Id)
     {
-        await _mediator.Send(new DeleteEmployeeCommand { Id = Id });
+        await _sender.Send(new DeleteEmployeeCommand { Id = Id });
         return NoContent();
     }
 }

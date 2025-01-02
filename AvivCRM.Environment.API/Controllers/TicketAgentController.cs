@@ -12,20 +12,20 @@ namespace AvivCRM.Environment.API.Controllers;
 [ApiController]
 public class TicketAgentController : ControllerBase
 {
-    private readonly IMediator _mediator;
-    public TicketAgentController(IMediator mediator) => _mediator = mediator;
+    private readonly ISender _sender;
+    public TicketAgentController(ISender sender) => _sender = sender;
 
     [HttpGet("GetAll")]
     public async Task<IActionResult> GetAll()
     {
-        var ticketAgentList = await _mediator.Send(new GetAllTicketAgentsQuery());
+        var ticketAgentList = await _sender.Send(new GetAllTicketAgentsQuery());
         return Ok(ticketAgentList);
     }
 
     [HttpGet("GetById")]
     public async Task<IActionResult> GetById(Guid Id)
     {
-        var ticketAgent = await _mediator.Send(new GetTicketAgentByIdQuery { Id = Id });
+        var ticketAgent = await _sender.Send(new GetTicketAgentByIdQuery { Id = Id });
         if (ticketAgent is not null) { return Ok(ticketAgent); }
         return NotFound();
     }
@@ -33,21 +33,21 @@ public class TicketAgentController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create(CreateTicketAgentCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return Ok("TicketAgents Created Successfully.");
     }
 
     [HttpPut("Update")]
     public async Task<IActionResult> Update(UpdateTicketAgentCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return NoContent();
     }
 
     [HttpDelete("Delete")]
     public async Task<IActionResult> Delete(Guid Id)
     {
-        await _mediator.Send(new DeleteTicketAgentCommand { Id = Id });
+        await _sender.Send(new DeleteTicketAgentCommand { Id = Id });
         return NoContent();
     }
 }

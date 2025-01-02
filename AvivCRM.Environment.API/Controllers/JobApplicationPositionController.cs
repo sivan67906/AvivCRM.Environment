@@ -12,20 +12,20 @@ namespace AvivCRM.Environment.API.Controllers;
 [ApiController]
 public class JobApplicationPositionController : ControllerBase
 {
-    private readonly IMediator _mediator;
-    public JobApplicationPositionController(IMediator mediator) => _mediator = mediator;
+    private readonly ISender _sender;
+    public JobApplicationPositionController(ISender sender) => _sender = sender;
 
     [HttpGet("GetAll")]
     public async Task<IActionResult> GetAll()
     {
-        var jobApplicationPositionList = await _mediator.Send(new GetAllJobApplicationPositionsQuery());
+        var jobApplicationPositionList = await _sender.Send(new GetAllJobApplicationPositionsQuery());
         return Ok(jobApplicationPositionList);
     }
 
     [HttpGet("GetById")]
     public async Task<IActionResult> GetById(Guid Id)
     {
-        var jobApplicationPosition = await _mediator.Send(new GetJobApplicationPositionByIdQuery { Id = Id });
+        var jobApplicationPosition = await _sender.Send(new GetJobApplicationPositionByIdQuery { Id = Id });
         if (jobApplicationPosition is not null) { return Ok(jobApplicationPosition); }
         return NotFound();
     }
@@ -33,21 +33,21 @@ public class JobApplicationPositionController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create(CreateJobApplicationPositionCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return Ok("JobApplicationPositions Created Successfully.");
     }
 
     [HttpPut("Update")]
     public async Task<IActionResult> Update(UpdateJobApplicationPositionCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return NoContent();
     }
 
     [HttpDelete("Delete")]
     public async Task<IActionResult> Delete(Guid Id)
     {
-        await _mediator.Send(new DeleteJobApplicationPositionCommand { Id = Id });
+        await _sender.Send(new DeleteJobApplicationPositionCommand { Id = Id });
         return NoContent();
     }
 }

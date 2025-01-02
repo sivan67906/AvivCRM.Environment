@@ -4,7 +4,7 @@ using AvivCRM.Environment.Infrastructure.Persistence;
 
 namespace AvivCRM.Environment.Infrastructure.Repositories;
 
-public abstract class GenericRepository<TEntity>(ApplicationDbContext _context, DbSet<TEntity> _dbSet) where TEntity : class
+public abstract class GenericRepository<TEntity>(EnvironmentDbContext _context, DbSet<TEntity> _dbSet) where TEntity : class
 {
     public void Add(TEntity entity) => _dbSet.Add(entity);
 

@@ -12,20 +12,20 @@ namespace AvivCRM.Environment.API.Controllers;
 [ApiController]
 public class RecruitJobApplicationStatusSettingController : ControllerBase
 {
-    private readonly IMediator _mediator;
-    public RecruitJobApplicationStatusSettingController(IMediator mediator) => _mediator = mediator;
+    private readonly ISender _sender;
+    public RecruitJobApplicationStatusSettingController(ISender sender) => _sender = sender;
 
     [HttpGet("GetAll")]
     public async Task<IActionResult> GetAll()
     {
-        var recruitJobApplicationStatusSettingList = await _mediator.Send(new GetAllRecruitJobApplicationStatusSettingsQuery());
+        var recruitJobApplicationStatusSettingList = await _sender.Send(new GetAllRecruitJobApplicationStatusSettingsQuery());
         return Ok(recruitJobApplicationStatusSettingList);
     }
 
     [HttpGet("GetById")]
     public async Task<IActionResult> GetById(Guid Id)
     {
-        var recruitJobApplicationStatusSetting = await _mediator.Send(new GetRecruitJobApplicationStatusSettingByIdQuery { Id = Id });
+        var recruitJobApplicationStatusSetting = await _sender.Send(new GetRecruitJobApplicationStatusSettingByIdQuery { Id = Id });
         if (recruitJobApplicationStatusSetting is not null) { return Ok(recruitJobApplicationStatusSetting); }
         return NotFound();
     }
@@ -33,21 +33,21 @@ public class RecruitJobApplicationStatusSettingController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create(CreateRecruitJobApplicationStatusSettingCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return Ok("RecruitJobApplicationStatusSettings Created Successfully.");
     }
 
     [HttpPut("Update")]
     public async Task<IActionResult> Update(UpdateRecruitJobApplicationStatusSettingCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return NoContent();
     }
 
     [HttpDelete("Delete")]
     public async Task<IActionResult> Delete(Guid Id)
     {
-        await _mediator.Send(new DeleteRecruitJobApplicationStatusSettingCommand { Id = Id });
+        await _sender.Send(new DeleteRecruitJobApplicationStatusSettingCommand { Id = Id });
         return NoContent();
     }
 }

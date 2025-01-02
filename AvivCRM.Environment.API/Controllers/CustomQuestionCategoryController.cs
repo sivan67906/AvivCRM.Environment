@@ -12,20 +12,20 @@ namespace AvivCRM.Environment.API.Controllers;
 [ApiController]
 public class CustomQuestionCategoryController : ControllerBase
 {
-    private readonly IMediator _mediator;
-    public CustomQuestionCategoryController(IMediator mediator) => _mediator = mediator;
+    private readonly ISender _sender;
+    public CustomQuestionCategoryController(ISender sender) => _sender = sender;
 
     [HttpGet("GetAll")]
     public async Task<IActionResult> GetAll()
     {
-        var customQuestionCategoryList = await _mediator.Send(new GetAllCustomQuestionCategoriesQuery());
+        var customQuestionCategoryList = await _sender.Send(new GetAllCustomQuestionCategoriesQuery());
         return Ok(customQuestionCategoryList);
     }
 
     [HttpGet("GetById")]
     public async Task<IActionResult> GetById(Guid Id)
     {
-        var customQuestionCategory = await _mediator.Send(new GetCustomQuestionCategoryByIdQuery { Id = Id });
+        var customQuestionCategory = await _sender.Send(new GetCustomQuestionCategoryByIdQuery { Id = Id });
         if (customQuestionCategory is not null) { return Ok(customQuestionCategory); }
         return NotFound();
     }
@@ -33,21 +33,21 @@ public class CustomQuestionCategoryController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create(CreateCustomQuestionCategoryCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return Ok("CustomQuestionCategories Created Successfully.");
     }
 
     [HttpPut("Update")]
     public async Task<IActionResult> Update(UpdateCustomQuestionCategoryCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return NoContent();
     }
 
     [HttpDelete("Delete")]
     public async Task<IActionResult> Delete(Guid Id)
     {
-        await _mediator.Send(new DeleteCustomQuestionCategoryCommand { Id = Id });
+        await _sender.Send(new DeleteCustomQuestionCategoryCommand { Id = Id });
         return NoContent();
     }
 }

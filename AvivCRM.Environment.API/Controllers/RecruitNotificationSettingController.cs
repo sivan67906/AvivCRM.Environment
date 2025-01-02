@@ -12,20 +12,20 @@ namespace AvivCRM.Environment.API.Controllers;
 [ApiController]
 public class RecruitNotificationSettingController : ControllerBase
 {
-    private readonly IMediator _mediator;
-    public RecruitNotificationSettingController(IMediator mediator) => _mediator = mediator;
+    private readonly ISender _sender;
+    public RecruitNotificationSettingController(ISender sender) => _sender = sender;
 
     [HttpGet("GetAll")]
     public async Task<IActionResult> GetAll()
     {
-        var recruitNotificationSettingList = await _mediator.Send(new GetAllRecruitNotificationSettingsQuery());
+        var recruitNotificationSettingList = await _sender.Send(new GetAllRecruitNotificationSettingsQuery());
         return Ok(recruitNotificationSettingList);
     }
 
     [HttpGet("GetById")]
     public async Task<IActionResult> GetById(Guid Id)
     {
-        var recruitNotificationSetting = await _mediator.Send(new GetRecruitNotificationSettingByIdQuery { Id = Id });
+        var recruitNotificationSetting = await _sender.Send(new GetRecruitNotificationSettingByIdQuery { Id = Id });
         if (recruitNotificationSetting is not null) { return Ok(recruitNotificationSetting); }
         return NotFound();
     }
@@ -33,21 +33,21 @@ public class RecruitNotificationSettingController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create(CreateRecruitNotificationSettingCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return Ok("RecruitNotificationSettings Created Successfully.");
     }
 
     [HttpPut("Update")]
     public async Task<IActionResult> Update(UpdateRecruitNotificationSettingCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return NoContent();
     }
 
     [HttpDelete("Delete")]
     public async Task<IActionResult> Delete(Guid Id)
     {
-        await _mediator.Send(new DeleteRecruitNotificationSettingCommand { Id = Id });
+        await _sender.Send(new DeleteRecruitNotificationSettingCommand { Id = Id });
         return NoContent();
     }
 }

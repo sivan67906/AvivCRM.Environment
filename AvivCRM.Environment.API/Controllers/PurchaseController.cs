@@ -11,14 +11,14 @@ namespace AvivCRM.Environment.API.Controllers;
 [ApiController]
 public class PurchaseController : ControllerBase
 {
-    private readonly IMediator _mediator;
-    public PurchaseController(IMediator mediator) => _mediator = mediator;
+    private readonly ISender _sender;
+    public PurchaseController(ISender sender) => _sender = sender;
 
 
     [HttpGet("GetById")]
     public async Task<IActionResult> GetById(Guid Id)
     {
-        var product = await _mediator.Send(new GetPurchaseByIdQuery { Id = Id });
+        var product = await _sender.Send(new GetPurchaseByIdQuery { Id = Id });
         if (product is not null) { return Ok(product); }
         return NotFound();
     }
@@ -27,21 +27,21 @@ public class PurchaseController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create(CreatePurchaseCommand command)
     {
-        var id = await _mediator.Send(command);
+        var id = await _sender.Send(command);
         return CreatedAtAction(nameof(GetById), new { id }, command);
     }
 
     [HttpPut("Update")]
     public async Task<IActionResult> Update(UpdatePurchaseCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return NoContent();
     }
 
     [HttpGet("GetAll")]
     public async Task<IActionResult> GetAll()
     {
-        var consumerList = await _mediator.Send(new GetAllPurchaseQuery());
+        var consumerList = await _sender.Send(new GetAllPurchaseQuery());
         return Ok(consumerList);
     }
 
@@ -49,7 +49,7 @@ public class PurchaseController : ControllerBase
     [HttpDelete("Delete")]
     public async Task<IActionResult> Delete(Guid Id)
     {
-        await _mediator.Send(new DeletePurchaseCommand { Id = Id });
+        await _sender.Send(new DeletePurchaseCommand { Id = Id });
         return NoContent();
     }
 }
