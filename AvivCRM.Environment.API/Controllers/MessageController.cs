@@ -11,14 +11,14 @@ namespace AvivCRM.Environment.API.Controllers;
 [ApiController]
 public class MessageController : ControllerBase
 {
-    private readonly IMediator _mediator;
-    public MessageController(IMediator mediator) => _mediator = mediator;
+    private readonly ISender _sender;
+    public MessageController(ISender sender) => _sender = sender;
 
 
     [HttpGet("GetById")]
     public async Task<IActionResult> GetById(Guid Id)
     {
-        var product = await _mediator.Send(new GetMessageByIdQuery { Id = Id });
+        var product = await _sender.Send(new GetMessageByIdQuery { Id = Id });
         if (product is not null) { return Ok(product); }
         return NotFound();
     }
@@ -27,21 +27,21 @@ public class MessageController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create(CreateMessageCommand command)
     {
-        var id = await _mediator.Send(command);
+        var id = await _sender.Send(command);
         return CreatedAtAction(nameof(GetById), new { id }, command);
     }
 
     [HttpPut("Update")]
     public async Task<IActionResult> Update(UpdateMessageCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return NoContent();
     }
 
     [HttpGet("GetAll")]
     public async Task<IActionResult> GetAll()
     {
-        var consumerList = await _mediator.Send(new GetAllMessageQuery());
+        var consumerList = await _sender.Send(new GetAllMessageQuery());
         return Ok(consumerList);
     }
 
@@ -49,7 +49,7 @@ public class MessageController : ControllerBase
     [HttpDelete("Delete")]
     public async Task<IActionResult> Delete(Guid Id)
     {
-        await _mediator.Send(new DeleteMessageCommand { Id = Id });
+        await _sender.Send(new DeleteMessageCommand { Id = Id });
         return NoContent();
     }
 }

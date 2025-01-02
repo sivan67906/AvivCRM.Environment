@@ -12,20 +12,20 @@ namespace AvivCRM.Environment.API.Controllers;
 [ApiController]
 public class ProjectSettingController : ControllerBase
 {
-    private readonly IMediator _mediator;
-    public ProjectSettingController(IMediator mediator) => _mediator = mediator;
+    private readonly ISender _sender;
+    public ProjectSettingController(ISender sender) => _sender = sender;
 
     [HttpGet("GetAll")]
     public async Task<IActionResult> GetAll()
     {
-        var projectSettingList = await _mediator.Send(new GetAllProjectSettingsQuery());
+        var projectSettingList = await _sender.Send(new GetAllProjectSettingsQuery());
         return Ok(projectSettingList);
     }
 
     [HttpGet("GetById")]
     public async Task<IActionResult> GetById(Guid Id)
     {
-        var projectSetting = await _mediator.Send(new GetProjectSettingByIdQuery { Id = Id });
+        var projectSetting = await _sender.Send(new GetProjectSettingByIdQuery { Id = Id });
         if (projectSetting is not null) { return Ok(projectSetting); }
         return NotFound();
     }
@@ -33,21 +33,21 @@ public class ProjectSettingController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create(CreateProjectSettingCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return Ok("ProjectSettings Created Successfully.");
     }
 
     [HttpPut("Update")]
     public async Task<IActionResult> Update(UpdateProjectSettingCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return NoContent();
     }
 
     [HttpDelete("Delete")]
     public async Task<IActionResult> Delete(Guid Id)
     {
-        await _mediator.Send(new DeleteProjectSettingCommand { Id = Id });
+        await _sender.Send(new DeleteProjectSettingCommand { Id = Id });
         return NoContent();
     }
 }

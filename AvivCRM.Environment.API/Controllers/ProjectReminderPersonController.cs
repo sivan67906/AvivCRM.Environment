@@ -12,20 +12,20 @@ namespace AvivCRM.Environment.API.Controllers;
 [ApiController]
 public class ProjectReminderPersonController : ControllerBase
 {
-    private readonly IMediator _mediator;
-    public ProjectReminderPersonController(IMediator mediator) => _mediator = mediator;
+    private readonly ISender _sender;
+    public ProjectReminderPersonController(ISender sender) => _sender = sender;
 
     [HttpGet("GetAll")]
     public async Task<IActionResult> GetAll()
     {
-        var projectReminderPersonList = await _mediator.Send(new GetAllProjectReminderPersonsQuery());
+        var projectReminderPersonList = await _sender.Send(new GetAllProjectReminderPersonsQuery());
         return Ok(projectReminderPersonList);
     }
 
     [HttpGet("GetById")]
     public async Task<IActionResult> GetById(Guid Id)
     {
-        var projectReminderPerson = await _mediator.Send(new GetProjectReminderPersonByIdQuery { Id = Id });
+        var projectReminderPerson = await _sender.Send(new GetProjectReminderPersonByIdQuery { Id = Id });
         if (projectReminderPerson is not null) { return Ok(projectReminderPerson); }
         return NotFound();
     }
@@ -33,21 +33,21 @@ public class ProjectReminderPersonController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create(CreateProjectReminderPersonCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return Ok("ProjectReminderPersons Created Successfully.");
     }
 
     [HttpPut("Update")]
     public async Task<IActionResult> Update(UpdateProjectReminderPersonCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return NoContent();
     }
 
     [HttpDelete("Delete")]
     public async Task<IActionResult> Delete(Guid Id)
     {
-        await _mediator.Send(new DeleteProjectReminderPersonCommand { Id = Id });
+        await _sender.Send(new DeleteProjectReminderPersonCommand { Id = Id });
         return NoContent();
     }
 }

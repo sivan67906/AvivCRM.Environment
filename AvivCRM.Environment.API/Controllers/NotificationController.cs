@@ -11,13 +11,13 @@ namespace AvivCRM.Environment.API.Controllers;
 [ApiController]
 public class NotificationController : ControllerBase
 {
-    private readonly IMediator _mediator;
-    public NotificationController(IMediator mediator) => _mediator = mediator;
+    private readonly ISender _sender;
+    public NotificationController(ISender sender) => _sender = sender;
 
     [HttpGet("GetById")]
     public async Task<IActionResult> GetById(Guid Id)
     {
-        var notification = await _mediator.Send(new GetNotificationByIdQuery { Id = Id });
+        var notification = await _sender.Send(new GetNotificationByIdQuery { Id = Id });
         if (notification is not null) { return Ok(notification); }
         return NotFound();
     }
@@ -25,9 +25,9 @@ public class NotificationController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create(CreateNotificationCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return Ok("Notification Created Successfully.");
-        //var product = await _mediator.Send(new GetNotificationByIdQuery { Id = Id });
+        //var product = await _sender.Send(new GetNotificationByIdQuery { Id = Id });
         //if (product is not null) { return Ok(product); }
         //return NotFound();
     }
@@ -36,14 +36,14 @@ public class NotificationController : ControllerBase
     [HttpPut("Update")]
     public async Task<IActionResult> Update(UpdateNotificationCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return NoContent();
     }
 
     [HttpGet("GetAll")]
     public async Task<IActionResult> GetAll()
     {
-        var consumerList = await _mediator.Send(new GetAllNotificationQuery());
+        var consumerList = await _sender.Send(new GetAllNotificationQuery());
         return Ok(consumerList);
     }
 
@@ -51,7 +51,7 @@ public class NotificationController : ControllerBase
     [HttpDelete("Delete")]
     public async Task<IActionResult> Delete(Guid Id)
     {
-        await _mediator.Send(new DeleteNotificationCommand { Id = Id });
+        await _sender.Send(new DeleteNotificationCommand { Id = Id });
         return NoContent();
     }
 }

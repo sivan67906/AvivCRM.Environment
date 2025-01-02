@@ -15,7 +15,7 @@ public static class ServiceContainer
     public static IServiceCollection AddInfrastructureServices(
         this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<EnvironmentDbContext>(options =>
         options.UseSqlServer(configuration.GetConnectionString("configurationSettingsCS")));
 
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));

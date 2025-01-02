@@ -12,20 +12,20 @@ namespace AvivCRM.Environment.API.Controllers;
 [ApiController]
 public class FinanceUnitSettingController : ControllerBase
 {
-    private readonly IMediator _mediator;
-    public FinanceUnitSettingController(IMediator mediator) => _mediator = mediator;
+    private readonly ISender _sender;
+    public FinanceUnitSettingController(ISender sender) => _sender = sender;
 
     [HttpGet("GetAll")]
     public async Task<IActionResult> GetAll()
     {
-        var financeUnitSettingList = await _mediator.Send(new GetAllFinanceUnitSettingsQuery());
+        var financeUnitSettingList = await _sender.Send(new GetAllFinanceUnitSettingsQuery());
         return Ok(financeUnitSettingList);
     }
 
     [HttpGet("GetById")]
     public async Task<IActionResult> GetById(Guid Id)
     {
-        var financeUnitSetting = await _mediator.Send(new GetFinanceUnitSettingByIdQuery { Id = Id });
+        var financeUnitSetting = await _sender.Send(new GetFinanceUnitSettingByIdQuery { Id = Id });
         if (financeUnitSetting is not null) { return Ok(financeUnitSetting); }
         return NotFound();
     }
@@ -33,21 +33,21 @@ public class FinanceUnitSettingController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create(CreateFinanceUnitSettingCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return Ok("FinanceUnitSettings Created Successfully.");
     }
 
     [HttpPut("Update")]
     public async Task<IActionResult> Update(UpdateFinanceUnitSettingCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return NoContent();
     }
 
     [HttpDelete("Delete")]
     public async Task<IActionResult> Delete(Guid Id)
     {
-        await _mediator.Send(new DeleteFinanceUnitSettingCommand { Id = Id });
+        await _sender.Send(new DeleteFinanceUnitSettingCommand { Id = Id });
         return NoContent();
     }
 }

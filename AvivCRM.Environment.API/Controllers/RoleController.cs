@@ -12,20 +12,20 @@ namespace AvivCRM.Environment.API.Controllers;
 [ApiController]
 public class RoleController : ControllerBase
 {
-    private readonly IMediator _mediator;
-    public RoleController(IMediator mediator) => _mediator = mediator;
+    private readonly ISender _sender;
+    public RoleController(ISender sender) => _sender = sender;
 
     [HttpGet("GetAll")]
     public async Task<IActionResult> GetAll()
     {
-        var roleList = await _mediator.Send(new GetAllRolesQuery());
+        var roleList = await _sender.Send(new GetAllRolesQuery());
         return Ok(roleList);
     }
 
     [HttpGet("GetById")]
     public async Task<IActionResult> GetById(Guid Id)
     {
-        var role = await _mediator.Send(new GetRoleByIdQuery { Id = Id });
+        var role = await _sender.Send(new GetRoleByIdQuery { Id = Id });
         if (role is not null) { return Ok(role); }
         return NotFound();
     }
@@ -33,21 +33,21 @@ public class RoleController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create(CreateRoleCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return Ok("Roles Created Successfully.");
     }
 
     [HttpPut("Update")]
     public async Task<IActionResult> Update(UpdateRoleCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return NoContent();
     }
 
     [HttpDelete("Delete")]
     public async Task<IActionResult> Delete(Guid Id)
     {
-        await _mediator.Send(new DeleteRoleCommand { Id = Id });
+        await _sender.Send(new DeleteRoleCommand { Id = Id });
         return NoContent();
     }
 }

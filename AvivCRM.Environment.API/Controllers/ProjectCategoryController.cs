@@ -12,20 +12,20 @@ namespace AvivCRM.Environment.API.Controllers;
 [ApiController]
 public class ProjectCategoryController : ControllerBase
 {
-    private readonly IMediator _mediator;
-    public ProjectCategoryController(IMediator mediator) => _mediator = mediator;
+    private readonly ISender _sender;
+    public ProjectCategoryController(ISender sender) => _sender = sender;
 
     [HttpGet("GetAll")]
     public async Task<IActionResult> GetAll()
     {
-        var projectCategoryList = await _mediator.Send(new GetAllProjectCategoriesQuery());
+        var projectCategoryList = await _sender.Send(new GetAllProjectCategoriesQuery());
         return Ok(projectCategoryList);
     }
 
     [HttpGet("GetById")]
     public async Task<IActionResult> GetById(Guid Id)
     {
-        var projectCategory = await _mediator.Send(new GetProjectCategoryByIdQuery { Id = Id });
+        var projectCategory = await _sender.Send(new GetProjectCategoryByIdQuery { Id = Id });
         if (projectCategory is not null) { return Ok(projectCategory); }
         return NotFound();
     }
@@ -33,21 +33,21 @@ public class ProjectCategoryController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create(CreateProjectCategoryCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return Ok("ProjectCategories Created Successfully.");
     }
 
     [HttpPut("Update")]
     public async Task<IActionResult> Update(UpdateProjectCategoryCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return NoContent();
     }
 
     [HttpDelete("Delete")]
     public async Task<IActionResult> Delete(Guid Id)
     {
-        await _mediator.Send(new DeleteProjectCategoryCommand { Id = Id });
+        await _sender.Send(new DeleteProjectCategoryCommand { Id = Id });
         return NoContent();
     }
 }

@@ -3,7 +3,7 @@ using AvivCRM.Environment.Domain.Entities;
 
 namespace AvivCRM.Environment.Infrastructure.Persistence;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+public class EnvironmentDbContext(DbContextOptions<EnvironmentDbContext> options)
     : DbContext(options)
 {
 

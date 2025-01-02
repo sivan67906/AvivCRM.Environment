@@ -12,20 +12,20 @@ namespace AvivCRM.Environment.API.Controllers;
 [ApiController]
 public class CustomQuestionTypeController : ControllerBase
 {
-    private readonly IMediator _mediator;
-    public CustomQuestionTypeController(IMediator mediator) => _mediator = mediator;
+    private readonly ISender _sender;
+    public CustomQuestionTypeController(ISender sender) => _sender = sender;
 
     [HttpGet("GetAll")]
     public async Task<IActionResult> GetAll()
     {
-        var customQuestionTypeList = await _mediator.Send(new GetAllCustomQuestionTypesQuery());
+        var customQuestionTypeList = await _sender.Send(new GetAllCustomQuestionTypesQuery());
         return Ok(customQuestionTypeList);
     }
 
     [HttpGet("GetById")]
     public async Task<IActionResult> GetById(Guid Id)
     {
-        var customQuestionType = await _mediator.Send(new GetCustomQuestionTypeByIdQuery { Id = Id });
+        var customQuestionType = await _sender.Send(new GetCustomQuestionTypeByIdQuery { Id = Id });
         if (customQuestionType is not null) { return Ok(customQuestionType); }
         return NotFound();
     }
@@ -33,21 +33,21 @@ public class CustomQuestionTypeController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create(CreateCustomQuestionTypeCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return Ok("CustomQuestionTypes Created Successfully.");
     }
 
     [HttpPut("Update")]
     public async Task<IActionResult> Update(UpdateCustomQuestionTypeCommand command)
     {
-        await _mediator.Send(command);
+        await _sender.Send(command);
         return NoContent();
     }
 
     [HttpDelete("Delete")]
     public async Task<IActionResult> Delete(Guid Id)
     {
-        await _mediator.Send(new DeleteCustomQuestionTypeCommand { Id = Id });
+        await _sender.Send(new DeleteCustomQuestionTypeCommand { Id = Id });
         return NoContent();
     }
 }
